@@ -1,0 +1,29 @@
+{
+  "name": "dollar-family",
+  "version": "0.0.0",
+  "authors": [
+    "Radu-Daniel Vatavu <vatavu@eed.usv.ro>",
+    "Lisa Anthony <lanthony@umbc.edu>",
+    "Jacob O. Wobbrock <wobbrock@uw.edu>",
+    "Utkarsh Upadhyay <musically.ut@gmail.com>"
+  ],
+  "description": "Packaged dollar-family gesture recognizers.",
+  "main": "pdollar.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "gesture",
+    "dollar",
+    "recognition"
+  ],
+  "license": "BSD-3-Clause",
+  "homepage": "http://depts.washington.edu/aimgroup/proj/dollar/pdollar.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
