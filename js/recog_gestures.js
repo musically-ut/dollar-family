@@ -52,6 +52,9 @@ $(function ()
     $('.js-clear-stroke').on('mousedown.pdollar', onClickClearStrokes);
     $('.js-check').on('mousedown.pdollar', recognizeNow);
     $('.js-choice').on('mousedown.pdollar', addSampleGesture);
+    $('.js-intro').on('mousedown.pdollar', function () {
+        introJs().start();
+    });
 
     $('.ui.js-confirm').modal({
         closable: false,

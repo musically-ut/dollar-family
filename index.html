@@ -9,15 +9,20 @@
     <script src="semantic/dist/semantic.min.js"></script>
     <script src="pdollar.js"></script>
     <script src="js/recog_gestures.js"></script>
+    <script src="bower_components/intro.js/minified/intro.min.js"></script>
+
+    <link rel="stylesheet" href="bower_components/intro.js/minified/introjs.min.css">
     <link rel="stylesheet" href="semantic/dist/semantic.min.css">
     <link rel="stylesheet" href="css/recog.css">
 </head>
 
 <body>
 
-    <section class="absolute canvas container">
-        <canvas id="myCanvas" style="background-color:#dddddd" oncontextmenu="return false;">
-            <span>The &lt;canvas&gt; element is not supported by this browser.</span>
+    <section class="absolute canvas container" data-step="1" data-intro="Draw an alphabet here.">
+        <canvas id="myCanvas" oncontextmenu="return false;">
+            <span>
+                The &lt;canvas&gt; element is not supported by this browser.
+            </span>
         </canvas>
     </section>
 
@@ -27,15 +32,22 @@
 
     <div class="sub-header on-top">
         <h3>Draw here!</h3>
+        <button class="ui tiny inline blue circular basic icon button js-intro">
+            <i class="help icon"></i>
+        </button>
     </div>
 
     <div class="danger-buttons on-top">
         <div class="ui vertical buttons">
-            <button class="ui blue button js-clear-stroke" type="button">
+            <button class="ui blue button js-clear-stroke" type="button"
+                data-step="3" data-intro="Press here to clear the current strokes."
+                data-position="right">
                 <i class="remove icon"></i> Clear current stroke
             </button>
 
-            <button class="ui negative button js-clear-all-data" type="button">
+            <button class="ui negative button js-clear-all-data" type="button"
+                data-step="4" data-intro="Press here to forget all training data so far."
+                data-position="right">
                 <i class="trash icon"></i> Clear all data
             </button>
         </div>
@@ -43,7 +55,9 @@
 
     <div class="finished-buttons on-top">
         <div class="stats">Total gestures: <span class="js-gesture-count"></span></div>
-        <button class="ui positive button js-check" type="button">
+        <button class="ui positive button js-check" type="button"
+            data-step="2" data-intro="Press here to train and see current performance."
+            data-position="left">
             <i class="check icon"></i> Check
         </button>
     </div>
