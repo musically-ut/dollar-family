@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes" />
+
+    <title>Gesture recognizer</title>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="semantic/dist/semantic.min.js"></script>
+    <script src="pdollar.js"></script>
+    <script src="js/recog_gestures.js"></script>
+    <link rel="stylesheet" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" href="css/recog.css">
+</head>
+
+<body>
+
+    <section class="absolute canvas container">
+        <canvas id="myCanvas" style="background-color:#dddddd" oncontextmenu="return false;">
+            <span>The &lt;canvas&gt; element is not supported by this browser.</span>
+        </canvas>
+    </section>
+
+    <div class="header on-top">
+        <h1>Gesture recognizer</h1>
+    </div>
+
+    <div class="sub-header on-top">
+        <h3>Draw here!</h3>
+    </div>
+
+    <div class="danger-buttons on-top">
+        <div class="ui vertical buttons">
+            <button class="ui blue button js-clear-stroke" type="button">
+                <i class="remove icon"></i> Clear current stroke
+            </button>
+
+            <button class="ui negative button js-clear-all-data" type="button">
+                <i class="trash icon"></i> Clear all data
+            </button>
+        </div>
+    </div>
+
+    <div class="finished-buttons on-top">
+        <div class="stats">Total gestures: <span class="js-gesture-count"></span></div>
+        <button class="ui positive button js-check" type="button">
+            <i class="check icon"></i> Check
+        </button>
+    </div>
+
+    <section class="overlay hidden on-top">
+        <span class="results">
+            <h3>
+                <em>Guess: </em>
+                <span class="guess js-guess"></span>
+            </h3>
+            <h4>
+                <em>Confidence: </em>
+                <span class="confidence js-confidence"></span>
+            </h4>
+        </span>
+
+        <button class="ui button positive js-return" type="button">
+            <i class="arrow left icon"></i> Return
+        </button>
+
+        <div class="option-template">
+            <div class="space"><button class="ui blue button js-choice" data-name="A"><code>A</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="B"><code>B</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="C"><code>C</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="D"><code>D</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="E"><code>E</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="F"><code>F</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="G"><code>G</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="H"><code>H</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="I"><code>I</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="J"><code>J</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="K"><code>K</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="L"><code>L</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="M"><code>M</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="N"><code>N</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="O"><code>O</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="P"><code>P</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="Q"><code>Q</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="R"><code>R</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="S"><code>S</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="T"><code>T</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="U"><code>U</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="V"><code>V</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="W"><code>W</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="X"><code>X</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="Y"><code>Y</code></button></div>
+            <div class="space"><button class="ui blue button js-choice" data-name="Z"><code>Z</code></button></div>
+        </div>
+
+    </section>
+
+    <div class="ui basic small modal js-alert">
+        <i class="close icon"></i>
+        <div class="content js-modal-content"></div>
+        <div class="actions"><button class="ui basic inverted button js-close-modal"><i class="close icon"></i>Ok</button></div>
+    </div>
+
+    <div class="ui basic small modal js-confirm">
+        <div class="content">Are you sure?</div>
+        <div class="actions">
+            <div class="two fluid ui buttons">
+                <button class="ui ok red basic inverted button" type="button"><i class="check icon"></i> Yes</button>
+                <button class="ui cancel green basic inverted button" type="button"><i class="remove icon"></i> No</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://github.com/musically-ut/dollar-family"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png"></a>
+</body>
+</html>
