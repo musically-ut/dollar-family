@@ -60,7 +60,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
 **/
-this.PDollar = (function() {
+(function() {
 //
 // Point class
 //
@@ -97,12 +97,23 @@ var Origin = new Point(0,0,0);
 //
 // PDollarRecognizer class
 //
-function PDollarRecognizer(NumPoints, Origin) // constructor
+function PDollarRecognizer(_NumPoints, _Origin) // constructor
 {
     //
     // The $P Point-Cloud Recognizer API begins here --
     // 3 methods: Recognize(), AddGesture(), DeleteUserGestures()
     //
+
+    if (typeof _NumPoints !== 'undefined') {
+        NumPoints = _NumPoints;
+    }
+
+    if (typeof _Origin !== 'undefined') {
+        Origin = _Origin;
+    }
+
+    this.PointClouds = [];
+
     this.Recognize = function(points)
     {
         points = Resample(points, NumPoints);
@@ -284,8 +295,8 @@ function Resample(points, n)
 }
 function Scale(points)
 {
-    var minX = +Infinity, maxX = -Infinity, minY = +Infinity, maxY = -Infinity;
-    for (var i = 0; i < points.length; i++) {
+    var minX = +Infinity, maxX = -Infinity, minY = +Infinity, maxY = -Infinity, i;
+    for (i = 0; i < points.length; i++) {
         minX = Math.min(minX, points[i].X);
         minY = Math.min(minY, points[i].Y);
         maxX = Math.max(maxX, points[i].X);
@@ -293,7 +304,7 @@ function Scale(points)
     }
     var size = Math.max(maxX - minX, maxY - minY);
     var newpoints = [];
-    for (var i = 0; i < points.length; i++) {
+    for (i = 0; i < points.length; i++) {
         var qx = (points[i].X - minX) / size;
         var qy = (points[i].Y - minY) / size;
         newpoints[newpoints.length] = new Point(qx, qy, points[i].ID);
@@ -346,9 +357,15 @@ function Distance(p1, p2) // Euclidean distance between two points
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-return {
+var PDollar = {
     Point: Point,
     PDollarRecognizer: PDollarRecognizer,
     initDefaultGestures: initDefaultGestures
 };
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = PDollar;
+} else {
+    window.PDollar = PDollar;
+}
 })();
