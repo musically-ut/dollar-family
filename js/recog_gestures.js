@@ -32,51 +32,72 @@ $(function ()
     _g.fillStyle = "rgb(255,255,136)";
     // _g.fillRect(0, 0, _rc.width, 20);
 
-    $canvas.on('mousedown.pdollar', function (ev) {
-	mouseDownEvent(ev.clientX, ev.clientY, ev.button);
+    $canvas.on('mousedown.pdollar touchstart.pdollar', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (ev.originalEvent.changedTouches) {
+            ev = ev.originalEvent.changedTouches[0];
+        }
+        // console.log('starting', 'clientX = ', ev.clientX, 'clientY = ', ev.clientY);
+	mouseDownEvent(ev.clientX, ev.clientY);
     });
 
-    $canvas.on('mousemove.pdollar', function (ev) {
-	mouseMoveEvent(ev.clientX, ev.clientY, ev.button);
+    $canvas.on('mousemove.pdollar touchmove.pdollar', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (ev.originalEvent.changedTouches) {
+            ev = ev.originalEvent.changedTouches[0];
+        }
+        // console.log('moving', 'clientX = ', ev.clientX, 'clientY = ', ev.clientY);
+	mouseMoveEvent(ev.clientX, ev.clientY);
     });
 
-    $canvas.on('mouseup.pdollar', function (ev) {
-	mouseUpEvent(ev.clientX, ev.clientY, ev.button);
+    $canvas.on('mouseup.pdollar touchend.pdollar', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (ev.originalEvent.changedTouches) {
+            ev = ev.originalEvent.changedTouches[0];
+        }
+        // console.log('ending', 'clientX = ', ev.clientX, 'clientY = ', ev.clientY);
+	mouseUpEvent(ev.clientX, ev.clientY);
     });
 
-    $canvas.on('contextmenu.pdollar', function (ev) {
-	return false;
-    });
-
-    $('.js-return').on('mousedown.pdollar', hideOverlay);
-    $('.js-clear-stroke').on('mousedown.pdollar', onClickClearStrokes);
-    $('.js-check').on('mousedown.pdollar', recognizeNow);
-    $('.js-choice').on('mousedown.pdollar', addSampleGesture);
-    $('.js-intro').on('mousedown.pdollar', function () {
-        introJs().start();
+    $('.js-return').on('click.pdollar', hideOverlay);
+    $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
+    $('.js-check').on('click.pdollar', recognizeNow);
+    $('.js-choice').on('click.pdollar', addSampleGesture);
+    $('.js-intro').on('click.pdollar', function () {
+        introJs().setOption('showStepNumbers', false)
+                 .start()
+                 .onexit(function () { window.scrollTo(0, 0); });
     });
 
     $('.ui.js-confirm').modal({
         closable: false,
         onApprove: function () {
             onClickDelete();
+            _trainingCount = 0;
+            $('.js-gesture-count').text(_trainingCount);
         },
         onDeny: function () {
         }
     });
 
-    $('.js-clear-all-data').on('mousedown.pdollar', function () {
+    $('.js-clear-all-data').on('click.pdollar', function () {
         $('.ui.js-confirm').modal('show');
     });
 
-    $('.js-close-modal').on('click', function () {
+    $('.js-close-modal').on('click.pdollar', function () {
         $('.js-alert').modal('hide');
     });
 
     $('.js-gesture-count').text(_trainingCount);
 
+    // Make sure that the page is not accidentally scrolled.
+    window.scrollTo(0, 0);
+
     // Map touch events to mouse events
-    init();
+    // init();
     // $('.ui.accordion').accordion();
 });
 
@@ -112,33 +133,27 @@ function getScrollY()
 //
 // Mouse Events
 //
-function mouseDownEvent(x, y, button)
+function mouseDownEvent(x, y)
 {
     document.onselectstart = function() { return false; }; // disable drag-select
     document.onmousedown = function() { return false; }; // disable drag-select
-    if (button <= 1)
+
+    _isDown = true;
+    x -= _rc.x;
+    y -= _rc.y - getScrollY();
+    if (_strokeID === 0) // starting a new gesture
     {
-        _isDown = true;
-        x -= _rc.x;
-        y -= _rc.y - getScrollY();
-        if (_strokeID === 0) // starting a new gesture
-        {
-            _points.length = 0;
-            _g.clearRect(0, 0, _rc.width, _rc.height);
-        }
-        _points[_points.length] = new PDollar.Point(x, y, ++_strokeID);
-        drawText("Recording stroke #" + _strokeID + "...");
-        var clr = "rgb(" + rand(0,200) + "," + rand(0,200) + "," + rand(0,200) + ")";
-        _g.strokeStyle = clr;
-        _g.fillStyle = clr;
-        _g.fillRect(x - 4, y - 3, 9, 9);
+        _points.length = 0;
+        _g.clearRect(0, 0, _rc.width, _rc.height);
     }
-    else if (button == 2)
-    {
-        drawText("Recognizing gesture...");
-    }
+    _points[_points.length] = new PDollar.Point(x, y, ++_strokeID);
+    drawText("Recording stroke #" + _strokeID + "...");
+    var clr = "rgb(" + rand(0,200) + "," + rand(0,200) + "," + rand(0,200) + ")";
+    _g.strokeStyle = clr;
+    _g.fillStyle = clr;
+    _g.fillRect(x - 4, y - 3, 9, 9);
 }
-function mouseMoveEvent(x, y, button)
+function mouseMoveEvent(x, y)
 {
     if (_isDown)
     {
@@ -148,22 +163,15 @@ function mouseMoveEvent(x, y, button)
         drawConnectedPoint(_points.length - 2, _points.length - 1);
     }
 }
-function mouseUpEvent(x, y, button)
+function mouseUpEvent(x, y)
 {
     document.onselectstart = function() { return true; }; // enable drag-select
     document.onmousedown = function() { return true; }; // enable drag-select
 
-    if (button <= 1)
+    if (_isDown)
     {
-        if (_isDown)
-        {
-            _isDown = false;
-            drawText("Stroke #" + _strokeID + " recorded.");
-        }
-    }
-    else if (button == 2) // segmentation with right-click
-    {
-	recognizeNow();
+        _isDown = false;
+        drawText("Stroke #" + _strokeID + " recorded.");
     }
 }
 function drawConnectedPoint(from, to)
@@ -283,44 +291,6 @@ function addSampleGesture(ev) {
     } else {
         showModal('Unknown gesture chosen.');
     }
-}
-
-// From SO:
-// http://stackoverflow.com/questions/1517924/javascript-mapping-touch-events-to-mouse-events
-
-function touchHandler(event)
-{
-    var touches = event.changedTouches,
-        first = touches[0],
-        type = "";
-    switch(event.type)
-    {
-        case "touchstart": type = "mousedown"; break;
-        case "touchmove":  type = "mousemove"; break;
-        case "touchend":   type = "mouseup";   break;
-        default:           return;
-    }
-
-    // initMouseEvent(type, canBubble, cancelable, view, clickCount,
-    //                screenX, screenY, clientX, clientY, ctrlKey,
-    //                altKey, shiftKey, metaKey, button, relatedTarget);
-
-    var simulatedEvent = document.createEvent("MouseEvent");
-    simulatedEvent.initMouseEvent(type, true, true, window, 1,
-                                  first.screenX, first.screenY,
-                                  first.clientX, first.clientY, false,
-                                  false, false, false, 0/*left*/, null);
-
-    first.target.dispatchEvent(simulatedEvent);
-    event.preventDefault();
-}
-
-function init()
-{
-    document.addEventListener("touchstart", touchHandler, true);
-    document.addEventListener("touchmove", touchHandler, true);
-    document.addEventListener("touchend", touchHandler, true);
-    document.addEventListener("touchcancel", touchHandler, true);
 }
 
 function showModal(msg) {
