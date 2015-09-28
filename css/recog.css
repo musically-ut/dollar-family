@@ -1,3 +1,7 @@
+html, body {
+    overflow: hidden;
+}
+
 .absolute {
     position: fixed;
     top: 10px;
@@ -27,6 +31,11 @@ canvas span {
 
 @media (max-width: 700px) {
     .header {
+        display: none;
+    }
+    
+    /* IntroJS causes problems on mobile pages. */
+    .help.button {
         display: none;
     }
 }
@@ -69,7 +78,7 @@ overlay > * {
     margin: 1em 0;
 }
 
-.hidden {
+.overlay.hidden {
     left: 100%;
 }
 
