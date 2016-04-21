@@ -49,14 +49,15 @@ canvas span {
 
 .danger-buttons {
     position: fixed;
-    bottom: 25px;
-    left: 25px;
+    bottom: 12px;
+    left: 12px;
 }
 
 .finished-buttons {
     position: fixed;
-    right: 25px;
-    bottom: 25px;
+    right: 12px;
+    bottom: 12px;
+    text-align: center;
 }
 
 .overlay {
